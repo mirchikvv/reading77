@@ -6,95 +6,101 @@
     <title>IELTS Reading Test - MA_LESSONS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* ==== BASIC LAYOUT ==== */
-        body { margin:0; padding:0; font-family:Arial,sans-serif; overflow:hidden; background:#e6f3fa; }
-        .test-wrapper { display:flex; flex-direction:column; height:100vh; }
-        .test-container { display:flex; flex:1; overflow:hidden; }
+        :root { --primary: #0066cc; --light: #e6f3fa; --dark: #333; --success: #4CAF50; --danger: #f44336; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--light); overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        .test-wrapper { display: flex; flex-direction: column; height: 100vh; }
+        .test-container { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* ==== HEADER ==== */
-        .header { background:#fff; border-bottom:1px solid #ccc; padding:10px 20px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 4px rgba(0,0,0,.1); }
-        .header__logo h4 { margin:0; font-weight:bold; color:#333; }
-        .header__timer { font-size:1.2rem; font-weight:bold; color:#333; background:#d0e7f5; padding:5px 15px; border-radius:20px; border:1px solid #ccc; }
-        .header__icons { display:flex; gap:15px; }
-        .header__icon { font-size:1.2rem; color:#555; cursor:pointer; }
-        .header__icon:hover { color:#0066cc; }
+        /* HEADER */
+        .header { background: #fff; border-bottom: 1px solid #ddd; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 100; }
+        .header__logo h4 { margin: 0; font-weight: 700; color: var(--dark); font-size: 1.3rem; }
+        .header__timer { font-size: 1.3rem; font-weight: bold; color: var(--primary); background: #d0e7f5; padding: 8px 18px; border-radius: 25px; border: 2px solid #bbb; min-width: 100px; text-align: center; }
+        .header__icons { display: flex; gap: 18px; }
+        .header__icon { font-size: 1.4rem; color: #666; cursor: pointer; transition: color 0.2s; }
+        .header__icon:hover { color: var(--primary); }
 
-        /* ==== PASSAGE TABS ==== */
-        .passage-tabs { display:flex; background:#fff; border-bottom:1px solid #ccc; overflow-x:auto; }
-        .tab-button { padding:12px 20px; background:#f0f0f0; border:none; cursor:pointer; font-weight:bold; white-space:nowrap; transition:all .2s; }
-        .tab-button.active { background:#0066cc; color:#fff; }
-        .tab-button:hover:not(.active) { background:#d0e7f5; }
+        /* PASSAGE TABS */
+        .passage-tabs { display: flex; background: #fff; border-bottom: 1px solid #ddd; overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .tab-button { padding: 14px 24px; background: #f5f5f5; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; white-space: nowrap; transition: all 0.3s; flex: 1; min-width: 120px; }
+        .tab-button.active { background: var(--primary); color: white; }
+        .tab-button:hover:not(.active) { background: #e0e0e0; }
 
-        .passage-content { display:none; flex-direction:column; height:100%; }
-        .passage-content.active { display:flex; }
+        .passage-content { display: none; flex-direction: column; height: 100%; }
+        .passage-content.active { display: flex; }
 
-        .sectionRubric { margin:1em; width:calc(100% - 4em - 3px); border-radius:4px; padding:.75em 1em; background:#fff; border:1px solid #ccc; box-shadow:0 2px 4px rgba(0,0,0,.1); }
-        .sectionRubric h2 { font-size:1rem; margin-bottom:.25em; }
+        .sectionRubric { margin: 1.2em; padding: 1em 1.2em; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .sectionRubric h2 { font-size: 1.1rem; margin-bottom: 0.3em; color: var(--dark); }
 
-        .passage-container { width:45%; height:100%; overflow-y:auto; padding:20px; box-sizing:border-box; background:#e6f3fa; -webkit-user-select:text; user-select:text; }
-        .questions-container { flex:1; overflow-y:auto; padding:20px; box-sizing:border-box; background:#e6f3fa; -webkit-user-select:text; user-select:text; }
+        .passage-container { width: 48%; height: 100%; overflow-y: auto; padding: 22px; background: var(--light); -webkit-user-select: text; user-select: text; }
+        .questions-container { flex: 1; overflow-y: auto; padding: 22px; background: var(--light); -webkit-user-select: text; user-select: text; }
 
-        .divider { width:10px; background:#ccc; cursor:col-resize; position:relative; }
-        .divider-handle { width:4px; height:40px; background:#888; border-radius:2px; position:absolute; top:50%; left:3px; transform:translateY(-50%); }
+        .divider { width: 12px; background: #ccc; cursor: col-resize; position: relative; }
+        .divider-handle { width: 5px; height: 50px; background: #888; border-radius: 3px; position: absolute; top: 50%; left: 3.5px; transform: translateY(-50%); }
 
-        .question { margin-bottom:30px; background:#fff; padding:15px; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,.1); }
-        .question-rubric { margin-bottom:15px; font-weight:bold; }
+        .question { margin-bottom: 32px; background: #fff; padding: 18px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+        .question-rubric { margin-bottom: 16px; font-weight: 600; color: var(--dark); }
 
-        /* ==== QUESTION STYLES ==== */
-        .tfn-option { display:flex; align-items:center; margin:8px 0; }
-        .tfn-option input { margin-right:10px; }
+        .tfn-option { display: flex; align-items: center; margin: 10px 0; font-size: 1rem; }
+        .tfn-option input { margin-right: 12px; transform: scale(1.1); }
 
-        .completion-table { width:100%; border-collapse:collapse; margin-top:15px; }
-        .completion-table th,.completion-table td { border:1px solid #ccc; padding:10px; text-align:left; }
-        .summary-input { width:150px; padding:6px; border:2px dashed #888; border-radius:4px; margin:0 5px; font-size:15px; font-weight:bold; background:#d0e7f5; }
-        .summary-input.correct { border-color:#28a745; background:#e9f7ef; border-style:solid; }
-        .summary-input.incorrect { border-color:#dc3545; background:#f8d7da; border-style:solid; }
+        .completion-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        .completion-table th, .completion-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        .completion-table th { background: #f0f8ff; font-weight: 600; }
+        .summary-input { width: 140px; padding: 8px; border: 2px dashed #888; border-radius: 6px; margin: 0 6px; font-weight: bold; background: #d0e7f5; font-size: 1rem; }
+        .summary-input:focus { outline: 2px solid var(--primary); border-style: solid; }
 
-        .multi-choice label { display:block; margin:8px 0; }
+        .multi-choice label { display: block; margin: 10px 0; padding: 8px; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        .multi-choice label:hover { background: #f0f8ff; }
+        .multi-choice input { margin-right: 10px; transform: scale(1.1); }
 
-        .flowchart { margin-top:15px; }
-        .flowchart p { line-height:2.5; }
+        .footer { background: #f8f9fa; border-top: 1px solid #ddd; padding: 12px; box-shadow: 0 -2px 8px rgba(0,0,0,0.1); }
+        .nav-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .footer__questionWrapper { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .footer__questionNo { background: none; border: none; font-weight: 600; font-size: 1rem; color: var(--dark); cursor: default; }
+        .footer__subquestionWrapper { display: flex; flex-wrap: wrap; gap: 3px; }
+        .subQuestion { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ccc; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #555; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+        .subQuestion:hover { background: #e6f3fa; border-color: var(--primary); }
+        .subQuestion.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .subQuestion.attempted { background: var(--success); color: white; border-color: var(--success); }
 
-        /* ==== FOOTER ==== */
-        .footer { background:#f5f5f5; border-top:1px solid #ccc; padding:10px; }
-        .nav-row { display:flex; align-items:center; justify-content:space-between; }
-        .footer__questionWrapper { display:flex; align-items:center; }
-        .footer__questionNo { background:none; border:none; padding:5px 10px; cursor:pointer; font-weight:bold; font-size:14px; }
-        .footer__subquestionWrapper { display:flex; flex-wrap:wrap; margin-left:10px; }
-        .subQuestion { width:30px; height:30px; border-radius:50%; border:1px solid #ccc; background:#f0f0f0; margin:2px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#555; font-size:14px; transition:all .2s; }
-        .subQuestion:hover { background:#d0e7f5; }
-        .subQuestion.active { background:#0066cc; color:#fff; border-color:#0066cc; }
-        .subQuestion.attempted { background:#0066cc; color:#fff; }
-        .footer__deliverButton { background:#0066cc; color:#fff; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:14px; }
-        .footer__deliverButton:hover { background:#0055aa; }
-        .footer__deliverButton:disabled { background:#ccc; cursor:not-allowed; }
+        .footer__deliverButton { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 6px; transition: background 0.3s; }
+        .footer__deliverButton:hover { background: #0055aa; }
+        .footer__deliverButton:disabled { background: #aaa; cursor: not-allowed; }
 
-        /* ==== MODAL ==== */
-        .submission-modal { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.8); z-index:2000; justify-content:center; align-items:center; }
-        .submission-content { background:#fff; width:80%; max-width:800px; border-radius:10px; padding:30px; box-shadow:0 5px 30px rgba(0,0,0,.5); max-height:80vh; overflow-y:auto; }
-        .score-display { text-align:center; margin-bottom:20px; }
-        .score-number { font-size:3rem; font-weight:bold; color:#0066cc; margin:10px 0; }
-        .band-score { font-size:2rem; font-weight:bold; color:#0066cc; margin:10px 0; }
-        .answer-item { padding:10px; margin-bottom:8px; border-radius:4px; border-left:4px solid #ccc; background:#f9f9f9; }
-        .answer-item.correct { border-left-color:#4CAF50; background:#f0fff0; }
-        .answer-item.incorrect { border-left-color:#f44336; background:#fff0f0; }
-        .correct-answer { color:#4CAF50; margin-left:10px; }
-        .incorrect-answer { color:#f44336; margin-left:10px; }
-        .correct-status { color:#4CAF50; }
-        .incorrect-status { color:#f44336; }
+        .submission-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+        .submission-content { background: white; width: 90%; max-width: 900px; border-radius: 16px; padding: 32px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; }
+        .score-display { text-align: center; margin-bottom: 24px; }
+        .score-number { font-size: 3.8rem; font-weight: 800; color: var(--primary); margin: 12px 0; }
+        .band-score { font-size: 2.2rem; font-weight: 700; color: var(--success); margin: 12px 0; }
+        .answer-item { padding: 14px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid #ddd; background: #f9f9f9; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .answer-item.correct { border-left-color: var(--success); background: #f0fff0; }
+        .answer-item.incorrect { border-left-color: var(--danger); background: #fff0f0; }
+        .correct-answer { color: var(--success); font-weight: 600; }
+        .incorrect-answer { color: var(--danger); font-weight: 600; }
+        .correct-status { color: var(--success); font-weight: 600; }
+        .incorrect-status { color: var(--danger); font-weight: 600; }
 
-        /* ==== HIGHLIGHT TOOLBAR ==== */
-        .highlight { position:relative; border-radius:2px; padding:0 2px; margin:0 -2px; }
-        .highlight.yellow { background:rgba(255,255,0,.3); }
-        .highlight.green { background:rgba(0,255,0,.3); }
-        .highlight.pink { background:rgba(255,105,180,.3); }
-        .highlight.blue { background:rgba(0,191,255,.3); }
-        .highlight-toolbar { position:fixed; background:#fff; border:1px solid #ccc; border-radius:4px; box-shadow:0 2px 5px rgba(0,0,0,.2); display:none; z-index:1000; padding:5px; transform:translate(-50%,-100%); margin-top:-5px; }
-        .highlight-color { width:20px; height:20px; border-radius:50%; display:inline-block; margin:0 2px; cursor:pointer; border:1px solid #ccc; }
-        .highlight-color.yellow { background:#ffff00; }
-        .highlight-color.green { background:#00ff00; }
-        .highlight-color.pink { background:#ff69b4; }
-        .highlight-color.blue { background:#00bfff; }
+        .highlight { position: relative; border-radius: 3px; padding: 0 3px; margin: 0 -3px; }
+        .highlight.yellow { background: rgba(255,255,0,0.35); }
+        .highlight.green { background: rgba(0,255,0,0.35); }
+        .highlight.pink { background: rgba(255,105,180,0.35); }
+        .highlight.blue { background: rgba(0,191,255,0.35); }
+        .highlight-toolbar { position: fixed; background: white; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; z-index: 1000; padding: 8px; transform: translate(-50%, -110%); }
+        .highlight-color { width: 24px; height: 24px; border-radius: 50%; display: inline-block; margin: 0 4px; cursor: pointer; border: 2px solid #fff; box-shadow: 0 0 0 1px #ccc; }
+        .highlight-color.yellow { background: #ffff00; }
+        .highlight-color.green { background: #00ff00; }
+        .highlight-color.pink { background: #ff69b4; }
+        .highlight-color.blue { background: #00bfff; }
+
+        @media (max-width: 768px) {
+            .test-container { flex-direction: column; }
+            .passage-container, .questions-container { width: 100%; height: 50%; }
+            .divider { height: 12px; width: 100%; cursor: row-resize; }
+            .divider-handle { width: 50px; height: 5px; left: 50%; top: 3.5px; transform: translateX(-50%); }
+            .passage-tabs { font-size: 0.9rem; }
+            .tab-button { padding: 10px 12px; }
+        }
     </style>
 </head>
 <body>
@@ -107,7 +113,7 @@
         <div class="header__icons">
             <i class="fas fa-wifi header__icon"></i>
             <i class="fas fa-bell header__icon"></i>
-            <i class="fas fa-cog header__icon" id="settingsButton"></i>
+            <i class="fas fa-cog header__icon"></i>
         </div>
     </header>
 
@@ -118,13 +124,13 @@
         <button class="tab-button" data-passage="3">Passage 3</button>
     </div>
 
-    <!-- ====================== PASSAGE 1 ====================== -->
+    <!-- PASSAGE 1 -->
     <div class="passage-content active" id="passage1">
         <div class="sectionRubric"><h2>Passage 1</h2><p>Read the text and answer questions 1–13</p></div>
         <div class="test-container">
-            <div class="passage-container" id="passage-container1">
+            <div class="passage-container">
                 <div id="passageContent1">
-                    <h2 style="text-align:center;">The history of the guitar</h2>
+                    <h2 style="text-align:center; margin-bottom: 1em;">The history of the guitar</h2>
                     <p><strong>A</strong> The earliest stringed instruments currently known to archaeologists are bowl harps. For millennia, people made bowl harps using, for example, tortoise shells as resonators, with a bent stick for a neck and one or more gut or silk strings. The world's museums contain many such harps from the ancient Sumerian, Babylonian, and Egyptian civilisations. Around 2500-2000 BC more advanced harps, such as the beautifully carved 11-stringed instrument found in the tomb of Queen Shub-Ad in ancient Mesopotamia, now modern day Iraq, started to appear.</p>
                     <p><strong>B</strong> The tanbur* probably developed from the bowl harp. It was different from the bowl harp in that its neck was straightened out to allow the strings to be pressed down to create more notes. Tomb paintings and stone carvings in Egypt indicate that harps and tanburs – plus flutes and percussion instruments – were being played together 3,500-4,000 years ago. Archaeologists have also found many similar relics amongst the ruins of the ancient Mesopotamian civilisation. Many of these instruments have survived into modern times in almost unchanged form, for example folk instruments of the region such as the Turkish saz and Afghan panchtar.</p>
                     <p><strong>C</strong> At 3,500 years old, the tanbur which belonged to the Egyptian singer Har-Mose is the earliest known example of this instrument. Har-Mose's tanbur had three strings and a plectrum suspended from the neck by a cord. The soundbox, which increased the volume, was made of beautifully polished cedarwood and covered in rawhide. It can be seen today at the Archaeological Museum in Cairo.</p>
@@ -135,95 +141,72 @@
                     <p><strong>H</strong> At the beginning of the 19th century, the present-day guitar began to take shape, although bodies were still fairly small and narrow-waisted. The modern classical guitar first appeared in its current form in the mid-19th century, when the Spanish guitar maker Antonio Torres increased the size of the body, altered its proportions, and introduced the revolutionary fan-braced top**. His design radically increased the volume and improved the tone of the instrument, and very soon became the norm. This design has remained essentially unchanged to this day.</p>
                     <p><strong>I</strong> At the time when Torres made his breakthrough, German immigrants to America – among them Christian Fredrich Martin – began making guitars with X-braced tops. Steel strings, which became widely available several decades later in the early 1900s, offered the promise of much louder guitar, but the increased tension was too much for the fan-braced top. The stronger X-braced top proved equal to the job, and quickly became the industry standard.</p>
                     <p><strong>J</strong> At the end of the 19th century, guitar manufacturer Orville Gibson added steel strings to a body constructed like a cello, a combination which produced more volume. The electric guitar was born when pickups were fitted to Hawaiian and jazz guitars in the late 1920s, but met with little success until 1936, when Gibson introduced its famous ES150 model.</p>
-                    <p><em>tanbur*: a long-necked stringed instrument with a small pear-shaped body<br>fan-braced top**: a strengthening structure in the shape of a fan inserted into the soundbox</em></p>
+                    <p style="font-style: italic; margin-top: 1.5em;"><strong>tanbur*</strong>: a long-necked stringed instrument with a small pear-shaped body<br><strong>fan-braced top**</strong>: a strengthening structure in the shape of a fan inserted into the soundbox</p>
                 </div>
             </div>
             <div class="divider" id="divider1"><div class="divider-handle"></div></div>
-            <div class="questions-container" id="questions-container1">
-
-                <!-- ==== Questions 1–6 TRUE/FALSE/NOT GIVEN ==== -->
+            <div class="questions-container">
+                <!-- Questions 1–6 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 1–6</h3>
-                        <p>Choose <strong>TRUE</strong> if the statement agrees with the information, <strong>FALSE</strong> if it contradicts, or <strong>NOT GIVEN</strong> if there is no information.</p>
+                        <p>Do the following statements agree with the information given in the text? Choose <strong>TRUE</strong>, <strong>FALSE</strong> or <strong>NOT GIVEN</strong>.</p>
                     </div>
-                    <div class="question-content">
-                        <div class="question-item"><p><span class="question-number">1</span> The instrument found in Queen Shub-Ad's tomb is the world's oldest known version of a harp.</p>
-                            <div class="tfn-option"><input type="radio" name="q1" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q1" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q1" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">2</span> Today's Afghan panchtar is very similar to an ancient Mesopotamian instrument.</p>
-                            <div class="tfn-option"><input type="radio" name="q2" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q2" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q2" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">3</span> The Egyptian singer Har-Mose was an excellent tanbur player.</p>
-                            <div class="tfn-option"><input type="radio" name="q3" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q3" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q3" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">4</span> Cairo Archaeological Museum contains many historic musical instruments.</p>
-                            <div class="tfn-option"><input type="radio" name="q4" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q4" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q4" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">5</span> The instrument carved in stone at Alaca Huyuk is consistent with Dr Michael Kasha's definition of a guitar.</p>
-                            <div class="tfn-option"><input type="radio" name="q5" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q5" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q5" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">6</span> The different instruments that appeared in medieval literature had the same number of strings.</p>
-                            <div class="tfn-option"><input type="radio" name="q6" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q6" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q6" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
+                    <div class="question-item"><p><span class="question-number">1</span> The instrument found in Queen Shub-Ad's tomb is the world's oldest known version of a harp.</p>
+                        <div class="tfn-option"><input type="radio" name="q1" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q1" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q1" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">2</span> Today's Afghan panchtar is very similar to an ancient Mesopotamian instrument.</p>
+                        <div class="tfn-option"><input type="radio" name="q2" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q2" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q2" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">3</span> The Egyptian singer Har-Mose was an excellent tanbur player.</p>
+                        <div class="tfn-option"><input type="radio" name="q3" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q3" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q3" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">4</span> Cairo Archaeological Museum contains many historic musical instruments.</p>
+                        <div class="tfn-option"><input type="radio" name="q4" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q4" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q4" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">5</span> The instrument carved in stone at Alaca Huyuk is consistent with Dr Michael Kasha's definition of a guitar.</p>
+                        <div class="tfn-option"><input type="radio" name="q5" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q5" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q5" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">6</span> The different instruments that appeared in medieval literature had the same number of strings.</p>
+                        <div class="tfn-option"><input type="radio" name="q6" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q6" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q6" value="NOT GIVEN"><label>NOT GIVEN</label></div>
                     </div>
                 </div>
 
-                <!-- ==== Questions 7–13 TABLE COMPLETION ==== -->
+                <!-- Questions 7–13 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 7–13</h3>
                         <p>Complete the table below. Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</p>
                     </div>
                     <table class="completion-table">
                         <tr><th>Date</th><th>Type of instrument</th><th>Notes</th></tr>
-                        <tr><td>13th-19th century</td><td>Chitarra</td><td>
-                            <ul>
-                                <li>was a development of an earlier instrument called the <input type="text" name="q7" class="summary-input"></li>
-                                <li>extra strings added in 16th century in Italy</li>
-                            </ul>
-                        </td></tr>
-                        <tr><td>from around the 1850s</td><td>Classical guitar</td><td>
-                            <ul>
-                                <li>its shape a result of modifications including a larger <input type="text" name="q8" class="summary-input"> introduced by Antonio Torres</li>
-                                <li>changes produced better tone and greater <input type="text" name="q9" class="summary-input"></li>
-                            </ul>
-                        </td></tr>
-                        <tr><td></td><td>X-braced top guitar</td><td>
-                            <ul>
-                                <li>first made in <input type="text" name="q10" class="summary-input"> in mid-19th century</li>
-                                <li>strings made of <input type="text" name="q11" class="summary-input"> became available around 1900</li>
-                            </ul>
-                        </td></tr>
-                        <tr><td>1920s onwards</td><td>Electric guitar</td><td>
-                            <ul>
-                                <li>in the 1920s, <input type="text" name="q12" class="summary-input"> added to guitars</li>
-                                <li>a well-known version brought out by <input type="text" name="q13" class="summary-input"></li>
-                            </ul>
-                        </td></tr>
+                        <tr><td>13th-19th century</td><td>Chitarra</td><td><ul><li>was a development of an earlier instrument called the <input type="text" name="q7" class="summary-input"></li><li>extra strings added in 16th century in Italy</li></ul></td></tr>
+                        <tr><td>from around the 1850s</td><td>Classical guitar</td><td><ul><li>its shape a result of modifications including a larger <input type="text" name="q8" class="summary-input"> introduced by Antonio Torres</li><li>changes produced better tone and greater <input type="text" name="q9" class="summary-input"></li></ul></td></tr>
+                        <tr><td></td><td>X-braced top guitar</td><td><ul><li>first made in <input type="text" name="q10" class="summary-input"> in mid-19th century</li><li>strings made of <input type="text" name="q11" class="summary-input"> became available around 1900</li></ul></td></tr>
+                        <tr><td>1920s onwards</td><td>Electric guitar</td><td><ul><li>in the 1920s, <input type="text" name="q12" class="summary-input"> added to guitars</li><li>a well-known version brought out by <input type="text" name="q13" class="summary-input"></li></ul></td></tr>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ====================== PASSAGE 2 ====================== -->
+    <!-- PASSAGE 2 -->
     <div class="passage-content" id="passage2">
         <div class="sectionRubric"><h2>Passage 2</h2><p>Read the text and answer questions 14–26</p></div>
         <div class="test-container">
-            <div class="passage-container" id="passage-container2">
+            <div class="passage-container">
                 <div id="passageContent2">
-                    <h2 style="text-align:center;">Playing soccer</h2>
+                    <h2 style="text-align:center; margin-bottom: 1em;">Playing soccer</h2>
                     <p><strong>A</strong> Street soccer, as its name implies, is an informal variation of the sport, often played on the street, particularly in urban areas. There are many reasons for the widespread popularity of street soccer. Unlike youth soccer, its more formally organized counterpart, no large space is needed, and goal posts, corner markers, and marked lines, associated with the formal game, are typically absent, as are game officials or referees. Another attraction of street soccer is that it is played frequently and competitively, but does not necessarily require standard 11-a-side teams or fixed playing positions. Unlike in youth soccer, inexperienced street soccer players rarely learn from repetitive technical and tactical drills. Instead, they learn from their poor performance in competition, unconscious of the skills they are nonetheless developing, and without older adults or coaches present. Players learn without effort through playing the game, and soon attain an almost natural feeling for the sport.</p>
                     <p><strong>B</strong> However, there are lots of cities in the world today where conditions are such that street soccer is no longer possible. Congested traffic now dominates where games were once played. Parks and open fields are used as hangouts for older teenagers with other interests. Add to this the requirement in many localities for official permits to use public spaces and the managed schedules that many young people have today, and spontaneous play of any kind is hard to imagine.</p>
                     <p><strong>C</strong> In spite of all these obstacles, which are probably solvable in most instances, there is another sociological explanation of why in many places street soccer doesn't enjoy the same popularity it once did. In his book <em>How Soccer Explains the World</em>, US writer Franklin Foer observes: But for all the talk of freedom, the 1960s parenting style had a far less relaxed side too. Like the 1960s consumer movement which brought seat belts and airbags to cars, the (youth) soccer movement felt like it could create a set of ... regulations that would protect both the child's body and mind from damage. Soccer leagues like the one I played in as a child handed out 'participation' prizes to every player, no matter how few games his (or her) team won.... Where most of the world accepts the practice of using your head to hit the ball as an essential element of the game, some (youth) soccer parents have worried over the potential for injury to the brain. An entire industry grew up to manufacture protective headgear.... Even though very little medical evidence supports this fear, some youth leagues prohibited heading the ball altogether.</p>
@@ -234,41 +217,36 @@
                 </div>
             </div>
             <div class="divider" id="divider2"><div class="divider-handle"></div></div>
-            <div class="questions-container" id="questions-container2">
-
-                <!-- ==== Questions 14–19 PARAGRAPH MATCHING ==== -->
+            <div class="questions-container">
+                <!-- Questions 14–19 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 14–19</h3>
-                        <p>Reading Passage 2 has seven sections, <strong>A-G</strong>. Which section contains the following information?</p>
-                        <p>Write the correct letter, <strong>A-G</strong>, in boxes <strong>14-19</strong>.</p>
+                        <p>Which section contains the following information? Write <strong>A–G</strong>.</p>
                     </div>
-                    <div class="question-content">
-                        <div class="question-item"><p><span class="question-number">14</span> a contrast between the ways young players gain experience of playing different positions</p>
-                            <select name="q14"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">15</span> examples outside sport of greater emphasis on individual safety</p>
-                            <select name="q15"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">16</span> a description of methods of selection for leadership on soccer teams</p>
-                            <select name="q16"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">17</span> details of urban changes that discourage street soccer</p>
-                            <select name="q17"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">18</span> a mention of the lesson that failure teaches street soccer players</p>
-                            <select name="q18"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">19</span> an explanation of why youth soccer emphasises the need for coaches</p>
-                            <select name="q19"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
-                        </div>
+                    <div class="question-item"><p><span class="question-number">14</span> a contrast between the ways young players gain experience of playing different positions</p>
+                        <select name="q14"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">15</span> examples outside sport of greater emphasis on individual safety</p>
+                        <select name="q15"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">16</span> a description of methods of selection for leadership on soccer teams</p>
+                        <select name="q16"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">17</span> details of urban changes that discourage street soccer</p>
+                        <select name="q17"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">18</span> a mention of the lesson that failure teaches street soccer players</p>
+                        <select name="q18"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">19</span> an explanation of why youth soccer emphasises the need for coaches</p>
+                        <select name="q19"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option></select>
                     </div>
                 </div>
 
-                <!-- ==== Questions 20–21 CHOOSE TWO ==== -->
+                <!-- Questions 20–21 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 20–21</h3>
-                        <p>Choose <strong>TWO</strong> correct answers. The list below gives some possible reasons for the popularity of street soccer.</p>
-                        <p>Which <strong>TWO</strong> of these reasons are mentioned by the writer?</p>
+                        <p>Choose <strong>TWO</strong> letters. Which <strong>TWO</strong> reasons for the popularity of street soccer are mentioned?</p>
                     </div>
                     <div class="multi-choice">
                         <label><input type="checkbox" name="q20" value="A"> A Many famous soccer players got their start in street soccer.</label>
@@ -279,11 +257,10 @@
                     </div>
                 </div>
 
-                <!-- ==== Questions 22–23 CHOOSE TWO (Foer) ==== -->
+                <!-- Questions 22–23 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 22–23</h3>
-                        <p>Choose <strong>TWO</strong> correct answers. The list below gives some possible results of the 1960s parenting style.</p>
-                        <p>Which <strong>TWO</strong> of these results are mentioned by Franklin Foer?</p>
+                        <p>Choose <strong>TWO</strong> letters. Which <strong>TWO</strong> results of the 1960s parenting style does Franklin Foer mention?</p>
                     </div>
                     <div class="multi-choice">
                         <label><input type="checkbox" name="q22" value="A"> A Participation in youth soccer became much more expensive.</label>
@@ -294,29 +271,27 @@
                     </div>
                 </div>
 
-                <!-- ==== Questions 24–26 SUMMARY ONE WORD ==== -->
+                <!-- Questions 24–26 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 24–26</h3>
-                        <p>Complete the summary below. Write <strong>ONE WORD ONLY</strong> from the passage for each answer.</p>
+                        <p>Complete the summary. Write <strong>ONE WORD ONLY</strong>.</p>
                     </div>
-                    <div class="summary-completion-container">
-                        <p style="line-height:2.5;">
-                            For youth soccer players, a key <input type="text" name="q24" class="summary-input"> is that they should always come away from the game with a positive attitude. In this respect, regardless of the effort the players make, they get some kind of <input type="text" name="q25" class="summary-input"> at the end of a game.<br>
-                            In street soccer, however, players gain resilience because they have to learn to cope with failure. But the outcome of a match isn't remembered for long. In fact, no-one ever keeps a <input type="text" name="q26" class="summary-input"> of the results of games.
-                        </p>
-                    </div>
+                    <p style="line-height: 2.6;">
+                        For youth soccer players, a key <input type="text" name="q24" class="summary-input"> is that they should always come away from the game with a positive attitude. In this respect, regardless of the effort the players make, they get some kind of <input type="text" name="q25" class="summary-input"> at the end of a game.<br>
+                        In street soccer, however, players gain resilience because they have to learn to cope with failure. But the outcome of a match isn't remembered for long. In fact, no-one ever keeps a <input type="text" name="q26" class="summary-input"> of the results of games.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ====================== PASSAGE 3 ====================== -->
+    <!-- PASSAGE 3 -->
     <div class="passage-content" id="passage3">
         <div class="sectionRubric"><h2>Passage 3</h2><p>Read the text and answer questions 27–40</p></div>
         <div class="test-container">
-            <div class="passage-container" id="passage-container3">
+            <div class="passage-container">
                 <div id="passageContent3">
-                    <h2 style="text-align:center;">The History of Chocolate</h2>
+                    <h2 style="text-align:center; margin-bottom: 1em;">The History of Chocolate</h2>
                     <p><strong>A</strong> Chocolate is now perceived as a ubiquitous indulgence, whether consumed as confectionery or a beverage, readily accessible in global markets. However, it may come as a surprise that chocolate was once regarded as a commodity of extraordinary value. The discovery of the cocoa tree, the source of chocolate, occurred approximately 2,000 years ago in the lush tropical rain forests of the Americas. The evolution of the chocolate — from a regionally significant Mesoamerican drink to globally consumed confectionery — has been shaped through cross-continental cultural exchanges and the successive influences of multiple civilisations.</p>
                     <p><strong>B</strong> Historians suggest that the ancient Maya pioneered cocoa tree cultivation in Mesoamerica, with evidence dating back approximately 2,000 years. They transplanted cocoa trees from the dense rain forest into their domesticated gardens, where cocoa beans were initially roasted and ground into a smooth paste. The paste was combined with spices and water to produce unsweetened chocolate beverages. The Maya also employed a distinctive technique of transferring the liquid back and forth between containers, generating a foamy layer on the drink's surface.</p>
                     <p><strong>C</strong> Cocoa and chocolate were integral to Maya culture, commonly depicted in their architectural structures and artistic works. While the aristocracy, particularly the royal families, consumed chocolate during elaborate ceremonies, even less privileged groups occasionally savoured the drink. Furthermore, cocoa beans served as a powerful emblem of marital union and were ritually exchanged during wedding ceremonies.</p>
@@ -328,81 +303,74 @@
                 </div>
             </div>
             <div class="divider" id="divider3"><div class="divider-handle"></div></div>
-            <div class="questions-container" id="questions-container3">
-
-                <!-- ==== Questions 27–31 PARAGRAPH MATCHING ==== -->
+            <div class="questions-container">
+                <!-- Questions 27–31 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 27–31</h3>
-                        <p>Which paragraph contains the following information? Write the correct letter, <strong>A-H</strong>, in boxes <strong>27-31</strong>. NB You may use any letter more than once.</p>
+                        <p>Which paragraph contains the following? Write <strong>A–H</strong>.</p>
                     </div>
-                    <div class="question-content">
-                        <div class="question-item"><p><span class="question-number">27</span> the part of cocoa trees used for chocolate production</p>
-                            <select name="q27"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">28</span> annual chocolate consumption per capita in the United States</p>
-                            <select name="q28"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">29</span> the higher likelihood of cultivated cocoa trees being attacked by insects</p>
-                            <select name="q29"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">30</span> a community which developed a preference for sweetened chocolate beverages</p>
-                            <select name="q30"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">31</span> an approach by which ancient Mexicans could acquire cocoa beans</p>
-                            <select name="q31"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
-                        </div>
+                    <div class="question-item"><p><span class="question-number">27</span> the part of cocoa trees used for chocolate production</p>
+                        <select name="q27"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">28</span> annual chocolate consumption per capita in the United States</p>
+                        <select name="q28"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">29</span> the higher likelihood of cultivated cocoa trees being attacked by insects</p>
+                        <select name="q29"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">30</span> a community which developed a preference for sweetened chocolate beverages</p>
+                        <select name="q30"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">31</span> an approach by which ancient Mexicans could acquire cocoa beans</p>
+                        <select name="q31"><option value="">--</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select>
                     </div>
                 </div>
 
-                <!-- ==== Questions 32–36 TRUE/FALSE/NOT GIVEN ==== -->
+                <!-- Questions 32–36 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 32–36</h3>
                         <p>Choose <strong>TRUE</strong>, <strong>FALSE</strong> or <strong>NOT GIVEN</strong>.</p>
                     </div>
-                    <div class="question-content">
-                        <div class="question-item"><p><span class="question-number">32</span> The Mayan ruling class forbade the use of cocoa and chocolate in rituals.</p>
-                            <div class="tfn-option"><input type="radio" name="q32" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q32" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q32" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">33</span> The Spanish explorer Hernán Cortés had made an investment in chocolate and chocolate beverages.</p>
-                            <div class="tfn-option"><input type="radio" name="q33" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q33" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q33" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">34</span> Wild cocoa trees are more susceptible to infectious diseases than cultivated ones.</p>
-                            <div class="tfn-option"><input type="radio" name="q34" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q34" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q34" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">35</span> During chocolate production, some of the seeds are discarded.</p>
-                            <div class="tfn-option"><input type="radio" name="q35" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q35" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q35" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
-                        <div class="question-item"><p><span class="question-number">36</span> Chocolate enjoys more prestige in Europe and the United States than in any other country.</p>
-                            <div class="tfn-option"><input type="radio" name="q36" value="TRUE"><label>TRUE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q36" value="FALSE"><label>FALSE</label></div>
-                            <div class="tfn-option"><input type="radio" name="q36" value="NOT GIVEN"><label>NOT GIVEN</label></div>
-                        </div>
+                    <div class="question-item"><p><span class="question-number">32</span> The Mayan ruling class forbade the use of cocoa and chocolate in rituals.</p>
+                        <div class="tfn-option"><input type="radio" name="q32" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q32" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q32" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">33</span> The Spanish explorer Hernán Cortés had made an investment in chocolate and chocolate beverages.</p>
+                        <div class="tfn-option"><input type="radio" name="q33" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q33" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q33" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">34</span> Wild cocoa trees are more susceptible to infectious diseases than cultivated ones.</p>
+                        <div class="tfn-option"><input type="radio" name="q34" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q34" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q34" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">35</span> During chocolate production, some of the seeds are discarded.</p>
+                        <div class="tfn-option"><input type="radio" name="q35" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q35" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q35" value="NOT GIVEN"><label>NOT GIVEN</label></div>
+                    </div>
+                    <div class="question-item"><p><span class="question-number">36</span> Chocolate enjoys more prestige in Europe and the United States than in any other country.</p>
+                        <div class="tfn-option"><input type="radio" name="q36" value="TRUE"><label>TRUE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q36" value="FALSE"><label>FALSE</label></div>
+                        <div class="tfn-option"><input type="radio" name="q36" value="NOT GIVEN"><label>NOT GIVEN</label></div>
                     </div>
                 </div>
 
-                <!-- ==== Questions 37–40 FLOW-CHART (max 2 words) ==== -->
+                <!-- Questions 37–40 -->
                 <div class="question">
                     <div class="question-rubric"><h3>Questions 37–40</h3>
-                        <p>Complete the flow-chart below. Write <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.</p>
+                        <p>Complete the flow-chart. Write <strong>NO MORE THAN TWO WORDS</strong>.</p>
                     </div>
-                    <div class="flowchart">
-                        <p style="line-height:2.5;">
-                            Seeds → classifying, cleaning, and roasting → stripping their <input type="text" name="q37" class="summary-input"> <br>
-                            ↓ Nibs ↓ <br>
-                            Crushing → producing <input type="text" name="q38" class="summary-input"> → mixing with measured quantities of substances such as sweeteners, liquid dairy, and <input type="text" name="q39" class="summary-input"> <br>
-                            ↓ Crumb ↓ <br>
-                            blending → crushing finely to obtain a smooth texture → manufacturing diverse shapes of chocolate in <input type="text" name="q40" class="summary-input"> <br>
-                            ↓ Chocolate
-                        </p>
-                    </div>
+                    <p style="line-height: 2.6;">
+                        Seeds → classifying, cleaning, and roasting → stripping their <input type="text" name="q37" class="summary-input"><br>
+                        ↓ Nibs ↓<br>
+                        Crushing → producing <input type="text" name="q38" class="summary-input"> → mixing with measured quantities of substances such as sweeteners, liquid dairy, and <input type="text" name="q39" class="summary-input"><br>
+                        ↓ Crumb ↓<br>
+                        blending → crushing finely to obtain a smooth texture → manufacturing diverse shapes of chocolate in <input type="text" name="q40" class="summary-input"><br>
+                        ↓ Chocolate
+                    </p>
                 </div>
             </div>
         </div>
@@ -415,7 +383,11 @@
                 <button class="footer__questionNo">Questions</button>
                 <div class="footer__subquestionWrapper" id="questionNav"></div>
             </div>
-            <button id="deliver-button" class="footer__deliverButton"><i class="fas fa-check"></i> Submit</button>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                <button id="prevPassageBtn" class="footer__deliverButton">Previous Passage</button>
+                <button id="nextPassageBtn" class="footer__deliverButton">Next Passage</button>
+                <button id="deliver-button" class="footer__deliverButton"><i class="fas fa-check"></i> Submit Test</button>
+            </div>
         </nav>
     </footer>
 </div>
@@ -423,19 +395,30 @@
 <!-- SUBMISSION MODAL -->
 <div class="submission-modal" id="submissionModal">
     <div class="submission-content">
-        <h2>Test Results</h2>
+        <h2 style="text-align:center; margin-bottom: 20px;">Test Completed!</h2>
         <div class="score-display">
-            <div>Your Score: <span class="score-number" id="userScore">0</span> / <span id="totalQuestions">40</span></div>
+            <div>Your Score: <span class="score-number" id="userScore">0</span> / 40</div>
             <div class="band-score" id="bandScore">Band: 0.0</div>
         </div>
-        <div class="time-spent" id="timeSpent"></div>
-        <div class="answers-section"><h3>Your Answers:</h3><div id="answersList"></div></div>
-        <div class="submission-buttons"><button class="confirm" id="closeSubmission">Close</button></div>
+        <div style="text-align:center; margin: 16px 0; color: #666;" id="timeSpent"></div>
+        <div class="answers-section"><h3 style="margin-bottom: 16px;">Detailed Results:</h3><div id="answersList"></div></div>
+        <div style="text-align:center; margin-top: 24px;">
+            <button class="footer__deliverButton" id="closeSubmission" style="padding: 12px 30px; font-size: 1.1rem;">Close</button>
+        </div>
     </div>
 </div>
 
+<!-- HIGHLIGHT TOOLBAR -->
+<div class="highlight-toolbar" id="highlightToolbar">
+    <button class="highlight-color yellow" data-color="yellow" title="Yellow"></button>
+    <button class="highlight-color green" data-color="green" title="Green"></button>
+    <button class="highlight-color pink" data-color="pink" title="Pink"></button>
+    <button class="highlight-color blue" data-color="blue" title="Blue"></button>
+    <button style="margin-left:8px; font-weight:bold; color:#dc3545;" title="Remove">X</button>
+</div>
+
 <script>
-/* ==================== CORRECT ANSWERS ==================== */
+// CORRECT ANSWERS
 const correctAnswers = {
     1:"FALSE",2:"TRUE",3:"NOT GIVEN",4:"NOT GIVEN",5:"TRUE",6:"FALSE",
     7:"chartar",8:"body",9:"volume",10:"America",11:"steel",12:"pickups",13:"Gibson",
@@ -447,131 +430,180 @@ const correctAnswers = {
     37:"outer shells",38:"chocolate liquor",39:"cocoa butter",40:"moulds"
 };
 
-/* ==================== PASSAGE SWITCHING ==================== */
-document.querySelectorAll('.tab-button').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-        document.querySelectorAll('.passage-content,.tab-button').forEach(el=>el.classList.remove('active'));
-        document.getElementById('passage'+btn.dataset.passage).classList.add('active');
-        btn.classList.add('active');
-        updateQuestionNav();
-    });
-});
+let currentPassage = 1;
+let testSubmitted = false;
+let startTime = new Date();
+let totalSeconds = 0;
+const timerInterval = setInterval(updateTimer, 1000);
 
-/* ==================== QUESTION NAVIGATION ==================== */
-function updateQuestionNav(){
-    const nav=document.getElementById('questionNav'); nav.innerHTML='';
-    const active=document.querySelector('.passage-content.active').id;
-    const start=active==='passage1'?1:active==='passage2'?14:27;
-    const end=active==='passage1'?13:active==='passage2'?26:40;
-    for(let i=start;i<=end;i++){
-        const b=document.createElement('button');
-        b.className='subQuestion'; b.dataset.ordernumber=i;
-        b.innerHTML=`<span class="sr-only">Question ${i}</span><span aria-hidden="true">${i}</span>`;
-        b.addEventListener('click',()=>{ document.querySelectorAll('.subQuestion').forEach(x=>x.classList.remove('active')); b.classList.add('active');
-            const el=document.querySelector(`[name="q${i}"],#q${i}`); if(el) el.scrollIntoView({behavior:'smooth'}); });
+function updateTimer() {
+    if (testSubmitted) return;
+    totalSeconds++;
+    const m = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+    const s = String(totalSeconds % 60).padStart(2, '0');
+    document.getElementById('testTimer').textContent = `${m}:${s}`;
+}
+
+// PASSAGE SWITCHING
+function switchPassage(n) {
+    if (n < 1 || n > 3 || n === currentPassage) return;
+    currentPassage = n;
+    document.querySelectorAll('.passage-content, .tab-button').forEach(el => el.classList.remove('active'));
+    document.getElementById('passage' + n).classList.add('active');
+    document.querySelector(`.tab-button[data-passage="${n}"]`).classList.add('active');
+    updateQuestionNav();
+    window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.tab-button').forEach(btn => {
+    btn.addEventListener('click', () => switchPassage(+btn.dataset.passage));
+});
+document.getElementById('prevPassageBtn').addEventListener('click', () => switchPassage(currentPassage - 1));
+document.getElementById('nextPassageBtn').addEventListener('click', () => switchPassage(currentPassage + 1));
+
+// QUESTION NAVIGATOR
+function updateQuestionNav() {
+    const nav = document.getElementById('questionNav'); nav.innerHTML = '';
+    const start = currentPassage === 1 ? 1 : currentPassage === 2 ? 14 : 27;
+    const end = currentPassage === 1 ? 13 : currentPassage === 2 ? 26 : 40;
+    for (let i = start; i <= end; i++) {
+        const b = document.createElement('button');
+        b.className = 'subQuestion'; b.textContent = i;
+        b.addEventListener('click', () => {
+            document.querySelectorAll('.subQuestion').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            const el = document.querySelector(`[name="q${i}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
         nav.appendChild(b);
     }
 }
 updateQuestionNav();
 
-/* ==================== TIMER ==================== */
-let totalSeconds=0, testSubmitted=false, startTime=new Date();
-const timerInterval=setInterval(()=>{
-    if(testSubmitted) return;
-    const m=String(Math.floor(totalSeconds/60)).padStart(2,'0');
-    const s=String(totalSeconds%60).padStart(2,'0');
-    document.getElementById('testTimer').textContent=`${m}:${s}`;
-    totalSeconds++;
-},1000);
-
-/* ==================== SUBMIT & RESULTS ==================== */
-document.getElementById('deliver-button').addEventListener('click',()=>{
-    if(testSubmitted){ document.getElementById('submissionModal').style.display='flex'; return; }
-    if(!confirm('Submit all answers?')) return;
-    clearInterval(timerInterval); testSubmitted=true;
-    disableAllInputs(); calculateResults();
+// SUBMIT & RESULTS
+document.getElementById('deliver-button').addEventListener('click', () => {
+    if (testSubmitted) { showResults(); return; }
+    if (!confirm('Submit your test? This cannot be undone.')) return;
+    clearInterval(timerInterval); testSubmitted = true;
+    disableAllInputs();
+    calculateResults();
 });
 
-function disableAllInputs(){
-    document.querySelectorAll('input,select').forEach(el=>el.disabled=true);
-    document.getElementById('deliver-button').disabled=true;
+function disableAllInputs() {
+    document.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+    document.getElementById('deliver-button').innerHTML = '<i class="fas fa-eye"></i> View Results';
 }
 
-function calculateResults(){
-    let score=0;
-    const list=document.getElementById('answersList'); list.innerHTML='';
-    for(let i=1;i<=40;i++){
-        let input=document.querySelector(`[name="q${i}"],#q${i}`);
-        let userAnswer='Not answered';
-        if(input){
-            if(input.type==='radio'){
-                const checked=document.querySelector(`input[name="q${i}"]:checked`);
-                userAnswer=checked?checked.value:'Not answered';
-            }else if(input.tagName==='SELECT'){
-                userAnswer=input.value||'Not answered';
-            }else if(input.type==='checkbox'){
-                const checked=[...document.querySelectorAll(`input[name="q${i}"]:checked`)].map(c=>c.value);
-                userAnswer=checked.length?checked.join(', '):'Not answered';
-            }else{
-                userAnswer=input.value.trim().toLowerCase()||'Not answered';
+function calculateResults() {
+    let score = 0;
+    const list = document.getElementById('answersList'); list.innerHTML = '';
+    for (let i = 1; i <= 40; i++) {
+        const input = document.querySelector(`[name="q${i}"]`);
+        let userAnswer = 'Not answered';
+        if (input) {
+            if (input.type === 'radio') {
+                const checked = document.querySelector(`input[name="q${i}"]:checked`);
+                userAnswer = checked ? checked.value : 'Not answered';
+            } else if (input.tagName === 'SELECT') {
+                userAnswer = input.value || 'Not answered';
+            } else if (input.type === 'checkbox') {
+                const checked = [...document.querySelectorAll(`input[name="q${i}"]:checked`)].map(c => c.value);
+                userAnswer = checked.length ? checked.sort().join(', ') : 'Not answered';
+            } else {
+                userAnswer = input.value.trim().toLowerCase() || 'Not answered';
             }
         }
-        const correct=correctAnswers[i];
-        const isCorrect=Array.isArray(correct)?
-            JSON.stringify(correct.sort())===JSON.stringify((userAnswer.split(', ').map(x=>x.toUpperCase())).sort()):
-            userAnswer===correct.toString().toLowerCase();
-        if(isCorrect) score++;
+        const correct = correctAnswers[i];
+        const isCorrect = Array.isArray(correct) ?
+            JSON.stringify(correct.sort()) === JSON.stringify(userAnswer.split(', ').sort()) :
+            userAnswer === correct.toString().toLowerCase();
+        if (isCorrect) score++;
 
-        const item=document.createElement('div');
-        item.className=`answer-item ${isCorrect?'correct':'incorrect'}`;
-        item.innerHTML=`<div class="answer-text">Q${i}: ${userAnswer}</div>
-            <span class="${isCorrect?'correct-answer':'incorrect-answer'}">(Correct: ${Array.isArray(correct)?correct.join(', '):correct})</span>
-            <span class="answer-status ${isCorrect?'correct-status':'incorrect-status'}">${isCorrect?'Correct':'Incorrect'}</span>`;
+        const item = document.createElement('div');
+        item.className = `answer-item ${isCorrect ? 'correct' : 'incorrect'}`;
+        item.innerHTML = `
+            <div><strong>Q${i}:</strong> ${userAnswer}</div>
+            <div><span class="${isCorrect ? 'correct-answer' : 'incorrect-answer'}">(Correct: ${Array.isArray(correct) ? correct.join(', ') : correct})</span></div>
+            <div><span class="${isCorrect ? 'correct-status' : 'incorrect-status'}">${isCorrect ? 'Correct' : 'Incorrect'}</span></div>
+        `;
         list.appendChild(item);
     }
-    document.getElementById('userScore').textContent=score;
-    const band=score>=39?9.0:score>=35?8.5:score>=30?8.0:score>=23?7.0:score>=16?6.0:score>=10?5.0:0.0;
-    document.getElementById('bandScore').textContent=`Band: ${band.toFixed(1)}`;
-    const diff=Math.floor((new Date()-startTime)/1000);
-    document.getElementById('timeSpent').textContent=`Time: ${Math.floor(diff/60)}m ${diff%60}s`;
-    document.getElementById('submissionModal').style.display='flex';
+    document.getElementById('userScore').textContent = score;
+    const band = score >= 39 ? 9.0 : score >= 35 ? 8.5 : score >= 30 ? 8.0 : score >= 23 ? 7.0 : score >= 16 ? 6.0 : score >= 10 ? 5.0 : 0.0;
+    document.getElementById('bandScore').textContent = `Band: ${band.toFixed(1)}`;
+    const diff = Math.floor((new Date() - startTime) / 1000);
+    document.getElementById('timeSpent').textContent = `Time: ${Math.floor(diff/60)} min ${diff%60} sec`;
+    showResults();
 }
-document.getElementById('closeSubmission').addEventListener('click',()=>document.getElementById('submissionModal').style.display='none');
 
-/* ==================== HIGHLIGHTING (simplified) ==================== */
-const toolbar=document.createElement('div');
-toolbar.className='highlight-toolbar';
-toolbar.innerHTML=`
-    <button class="highlight-color yellow" data-color="yellow"></button>
-    <button class="highlight-color green" data-color="green"></button>
-    <button class="highlight-color pink" data-color="pink"></button>
-    <button class="highlight-color blue" data-color="blue"></button>
-    <button class="remove"><i class="fas fa-times"></i></button>`;
-document.body.appendChild(toolbar);
-
-let selRange=null, selText='';
-document.addEventListener('mouseup',()=>{
-    const sel=window.getSelection();
-    selText=sel.toString().trim();
-    if(selText && sel.rangeCount){
-        selRange=sel.getRangeAt(0);
-        const rect=selRange.getBoundingClientRect();
-        toolbar.style.display='block';
-        toolbar.style.top=`${rect.top+window.scrollY-35}px`;
-        toolbar.style.left=`${rect.left+window.scrollX+rect.width/2}px`;
-    }else toolbar.style.display='none';
+function showResults() {
+    document.getElementById('submissionModal').style.display = 'flex';
+}
+document.getElementById('closeSubmission').addEventListener('click', () => {
+    document.getElementById('submissionModal').style.display = 'none';
 });
-toolbar.querySelectorAll('.highlight-color').forEach(btn=>{
-    btn.addEventListener('click',()=>{ if(selRange){ const span=document.createElement('span'); span.className=`highlight ${btn.dataset.color}`; selRange.surroundContents(span); } window.getSelection().removeAllRanges(); toolbar.style.display='none'; });
-});
-toolbar.querySelector('.remove').addEventListener('click',()=>{ if(selRange){ const contents=selRange.extractContents(); selRange.insertNode(contents); } window.getSelection().removeAllRanges(); toolbar.style.display='none'; });
 
-/* ==================== DIVIDER DRAG (one per passage) ==================== */
-document.querySelectorAll('.divider').forEach(div=>{
-    let dragging=false, startX, startWidth;
-    div.addEventListener('mousedown',e=>{ dragging=true; startX=e.clientX; startWidth=parseInt(getComputedStyle(div.previousElementSibling).width,10); document.body.style.cursor='col-resize'; });
-    document.addEventListener('mousemove',e=>{ if(!dragging) return; const diff=e.clientX-startX; const newW=startWidth+diff; if(newW>200 && newW<window.innerWidth-300) div.previousElementSibling.style.width=newW+'px'; });
-    document.addEventListener('mouseup',()=>{ dragging=false; document.body.style.cursor=''; });
+// HIGHLIGHTING
+let selRange = null;
+const toolbar = document.getElementById('highlightToolbar');
+document.addEventListener('mouseup', () => {
+    const sel = window.getSelection();
+    if (sel.toString().trim() && sel.rangeCount) {
+        selRange = sel.getRangeAt(0);
+        const rect = selRange.getBoundingClientRect();
+        toolbar.style.display = 'block';
+        toolbar.style.top = `${rect.top + window.scrollY - 45}px`;
+        toolbar.style.left = `${rect.left + window.scrollX + rect.width/2}px`;
+    } else {
+        toolbar.style.display = 'none';
+    }
+});
+toolbar.querySelectorAll('.highlight-color').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (selRange) {
+            const span = document.createElement('span');
+            span.className = `highlight ${btn.dataset.color}`;
+            selRange.surroundContents(span);
+        }
+        window.getSelection().removeAllRanges();
+        toolbar.style.display = 'none';
+    });
+});
+toolbar.lastElementChild.addEventListener('click', () => {
+    if (selRange) {
+        const contents = selRange.extractContents();
+        selRange.insertNode(contents);
+    }
+    window.getSelection().removeAllRanges();
+    toolbar.style.display = 'none';
+});
+
+// DIVIDER DRAG
+document.querySelectorAll('.divider').forEach(divider => {
+    let isDragging = false, startX, startWidth;
+    divider.addEventListener('mousedown', e => {
+        isDragging = true; startX = e.clientX;
+        startWidth = parseInt(getComputedStyle(divider.previousElementSibling).width, 10);
+        document.body.style.cursor = 'col-resize';
+    });
+    document.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        const diff = e.clientX - startX;
+        const newWidth = startWidth + diff;
+        if (newWidth > 300 && newWidth < window.innerWidth - 350) {
+            divider.previousElementSibling.style.width = newWidth + 'px';
+        }
+    });
+    document.addEventListener('mouseup', () => { isDragging = false; document.body.style.cursor = ''; });
+});
+
+// ATTEMPT TRACKING
+document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('change', () => {
+        const qNum = el.name.replace('q', '');
+        const btn = document.querySelector(`.subQuestion[data-ordernumber="${qNum}"]`);
+        if (btn) btn.classList.add('attempted');
+    });
 });
 </script>
 </body>
